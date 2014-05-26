@@ -26,6 +26,8 @@
     
     float x;
     float y;
+    
+    float locX, locY;
 }
 
 -(id)initWithSize:(CGSize)size {    
@@ -46,12 +48,13 @@
         
         self.backgroundColor = [SKColor colorWithRed:0.15 green:0.15 blue:0.3 alpha:1.0];
         
-        myLabel = [SKLabelNode labelNodeWithFontNamed:@"Chalkduster"];
-        
+        myLabel = [SKLabelNode labelNodeWithFontNamed:@"Arial Bold"];
         myLabel.text = @"Game Over!";
-        myLabel.fontSize = 30;
+        myLabel.fontSize = 42;
+        myLabel.fontColor = [UIColor whiteColor];
         myLabel.position = CGPointMake(CGRectGetMidX(self.frame),
                                        CGRectGetMidY(self.frame));
+        
         myLabel.hidden = YES;
         [self addChild:myLabel];
         self.alive = NO;
@@ -61,7 +64,11 @@
 
 - (void) initBackground:(CGSize) sceneSize
 {
-    self.backgroundImageNode = [SKSpriteNode spriteNodeWithImageNamed:@"background1.jpg"];
+    NSString *backgroundStr;
+    int backC = arc4random() % 27 + 1;
+    backgroundStr = [NSString stringWithFormat:@"back%d.jpg", backC];
+    
+    self.backgroundImageNode = [SKSpriteNode spriteNodeWithImageNamed:backgroundStr];
     self.backgroundImageNode.size = sceneSize;
     self.backgroundImageNode.position = CGPointMake(self.backgroundImageNode.size.width/2, self.frame.size.height/2);
     [self addChild:self.backgroundImageNode];
@@ -69,7 +76,10 @@
     self.pixel = [SKSpriteNode new];
     self.pixel  = [SKSpriteNode spriteNodeWithImageNamed:@"pixel.gif"];
     self.pixel.name = @"pixel";
-    self.pixel.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame));
+    locX = 200 + (arc4random() % ((int) viewB.width - 400));
+    locY = 200 + (arc4random() % ((int) viewB.height - 400));
+    NSLog(@"loc: %f, %f", locX, locY);
+    self.pixel.position = CGPointMake(locX, locY);
     
     self.screen = [SKSpriteNode new];
     self.screen.color = [UIColor clearColor];
@@ -79,7 +89,7 @@
 }
 
 -(void)initHud {
-    timeLabel = [SKLabelNode labelNodeWithFontNamed:@"Courier"];
+    timeLabel = [SKLabelNode labelNodeWithFontNamed:@"Arial Bold"];
     timeLabel.name = @"timeLabel";
     timeLabel.fontSize = 24;
     timeLabel.fontColor = [SKColor greenColor];
@@ -87,7 +97,7 @@
     timeLabel.position = CGPointMake(20 + timeLabel.frame.size.width/2, self.size.height - (20 + timeLabel.frame.size.height/2));
     [self addChild:timeLabel];
     
-    tapsLabel = [SKLabelNode labelNodeWithFontNamed:@"Courier"];
+    tapsLabel = [SKLabelNode labelNodeWithFontNamed:@"Arial Bold"];
     tapsLabel.name = @"tapsLabel";
     tapsLabel.fontSize = 24;
     tapsLabel.fontColor = [SKColor redColor];
@@ -155,7 +165,7 @@
                 self.alive = NO;
                 timeLabel.text = [NSString stringWithFormat:@"Time: %d", lastRecordedTime];
                 if (!won) {
-                    myLabel.text = @"Game Over Loser!";
+                    myLabel.text = @"Oh no! Better luck next round!";
                     myLabel.hidden = NO;
                 }
             }
@@ -165,13 +175,13 @@
 
 - (SKLabelNode *)countdownNode
 {
-    SKLabelNode *countNode = [SKLabelNode labelNodeWithFontNamed:@"Chalkduster"];
+    SKLabelNode *countNode = [SKLabelNode labelNodeWithFontNamed:@"Arial Bold"];
     if (time != 4)
         countNode.text = [NSString stringWithFormat:@"%d", 4 - time];
     else
         countNode.text = @"Begin!";
     countNode.fontSize = 122;
-    countNode.fontColor = [SKColor blackColor];
+    countNode.fontColor = [SKColor whiteColor];
     countNode.position = CGPointMake(CGRectGetMidX(self.frame),CGRectGetMidY(self.frame));
     //countNode.name = @"countNode";
     return countNode;
@@ -199,7 +209,7 @@
             if (!countdown) {
                 NSLog(@"touched!!!!");
                 self.alive = NO;
-                myLabel.text = @"Ya Won Kiiiiid";
+                myLabel.text = @"WOO! You got it! Keep it up!";
                 myLabel.hidden = NO;
                 won = YES;
             }

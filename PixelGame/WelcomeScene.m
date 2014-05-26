@@ -24,11 +24,12 @@
     self.backgroundColor = [SKColor blueColor];
     self.scaleMode = SKSceneScaleModeAspectFit;
     [self addChild: [self newHelloNode]];
+    [self addChild:[self newHelloNode2]];
 }
 
 - (SKLabelNode *)newHelloNode
 {
-    SKLabelNode *helloNode = [SKLabelNode labelNodeWithFontNamed:@"Chalkduster"];
+    SKLabelNode *helloNode = [SKLabelNode labelNodeWithFontNamed:@"Arial Bold"];
     helloNode.text = @"Pixel Game!";
     helloNode.fontSize = 42;
     helloNode.position = CGPointMake(CGRectGetMidX(self.frame),CGRectGetMidY(self.frame));
@@ -36,9 +37,29 @@
     return helloNode;
 }
 
+- (SKLabelNode *)newHelloNode2
+{
+    SKLabelNode *helloNode = [SKLabelNode labelNodeWithFontNamed:@"Arial Bold"];
+    helloNode.text = @"Tap anywhere to start the game!";
+    helloNode.fontSize = 28;
+    helloNode.position = CGPointMake(CGRectGetMidX(self.frame),CGRectGetMidY(self.frame) - 75);
+    helloNode.name = @"helloNode2";
+    return helloNode;
+}
+
 - (void)touchesBegan:(NSSet *) touches withEvent:(UIEvent *)event
 {
-    SKNode *helloNode = [self childNodeWithName:@"helloNode"];
+    SKNode *helloNode = [self childNodeWithName:@"helloNode2"];
+    if (helloNode != nil)
+    {
+        helloNode.name = nil;
+        SKAction *fadeAway = [SKAction fadeOutWithDuration: 0.25];
+        SKAction *remove = [SKAction removeFromParent];
+        SKAction *moveSequence = [SKAction sequence:@[fadeAway, remove]];
+        [helloNode runAction: moveSequence completion:nil];
+    }
+    
+    helloNode = [self childNodeWithName:@"helloNode"];
     if (helloNode != nil)
     {
         helloNode.name = nil;
