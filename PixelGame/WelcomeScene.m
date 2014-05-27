@@ -21,7 +21,14 @@
 
 - (void)createSceneContents
 {
-    self.backgroundColor = [SKColor blueColor];
+    //self.backgroundColor = [SKColor blueColor];
+    
+    SKSpriteNode *sn = [SKSpriteNode spriteNodeWithImageNamed:@"introBack"];
+    sn.size = self.frame.size;
+    sn.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame));
+    sn.name = @"introBack";
+    
+    [self addChild:sn];
     self.scaleMode = SKSceneScaleModeAspectFit;
     [self addChild: [self newHelloNode]];
     [self addChild:[self newHelloNode2]];

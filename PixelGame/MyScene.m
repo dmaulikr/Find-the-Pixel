@@ -65,8 +65,9 @@
 - (void) initBackground:(CGSize) sceneSize
 {
     NSString *backgroundStr;
-    int backC = arc4random() % 27 + 1;
+    int backC = arc4random() % 65 + 1;
     backgroundStr = [NSString stringWithFormat:@"back%d.jpg", backC];
+    NSLog(@"BACK %i", backC);
     
     self.backgroundImageNode = [SKSpriteNode spriteNodeWithImageNamed:backgroundStr];
     self.backgroundImageNode.size = sceneSize;
@@ -78,7 +79,6 @@
     self.pixel.name = @"pixel";
     locX = 200 + (arc4random() % ((int) viewB.width - 400));
     locY = 200 + (arc4random() % ((int) viewB.height - 400));
-    NSLog(@"loc: %f, %f", locX, locY);
     self.pixel.position = CGPointMake(locX, locY);
     
     self.screen = [SKSpriteNode new];
@@ -128,7 +128,6 @@
         self.lastSpawnTimeInterval = 0;
         time++;
         if (countdown) {
-            NSLog(@"counting! time: %d", time);
             if (time > 4) {
                 countdown = NO;
                 time = 1;
@@ -150,7 +149,6 @@
             }
         } else {
             if (self.alive) {
-                NSLog(@"game time: %d", time);
                 timeLabel.text = [NSString stringWithFormat:@"Time: %d", time];
                 lastRecordedTime = time;
                 
@@ -158,7 +156,6 @@
                 y = 2.0f * ((float)rand() / (float)RAND_MAX) - 1.0f;
                 x *= 1.2;
                 y *= 1.2;
-                NSLog(@"new x! %f", x);
             }
             else {
                 gameOver = YES;
@@ -207,7 +204,6 @@
     for (SKNode *node in nodes) {
         if ([node.name isEqualToString:@"screen"]) {
             if (!countdown) {
-                NSLog(@"touched!!!!");
                 self.alive = NO;
                 myLabel.text = @"WOO! You got it! Keep it up!";
                 myLabel.hidden = NO;
