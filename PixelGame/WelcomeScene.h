@@ -8,6 +8,7 @@
 
 #import <SpriteKit/SpriteKit.h>
 #import "MyScene.h"
+#import <iAd/iAd.h>
 
 @interface WelcomeScene : SKScene
 @property BOOL contentCreated;

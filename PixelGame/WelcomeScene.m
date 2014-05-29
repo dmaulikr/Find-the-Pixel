@@ -7,6 +7,7 @@
 //
 
 #import "WelcomeScene.h"
+#import "ViewController.h"
 
 @implementation WelcomeScene
 
@@ -73,6 +74,7 @@
         SKAction *fadeAway = [SKAction fadeOutWithDuration: 0.25];
         SKAction *remove = [SKAction removeFromParent];
         SKAction *moveSequence = [SKAction sequence:@[fadeAway, remove]];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"hideAd" object:nil];
         [helloNode runAction: moveSequence completion:^{
             SKScene *myScene  = [[MyScene alloc] initWithSize:self.frame.size];
             SKTransition *oa = [SKTransition fadeWithDuration:.01];

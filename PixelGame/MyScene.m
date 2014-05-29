@@ -77,8 +77,8 @@
     self.pixel = [SKSpriteNode new];
     self.pixel  = [SKSpriteNode spriteNodeWithImageNamed:@"pixel.gif"];
     self.pixel.name = @"pixel";
-    locX = 200 + (arc4random() % ((int) viewB.width - 400));
-    locY = 200 + (arc4random() % ((int) viewB.height - 400));
+    locX = 300 + (arc4random() % ((int) viewB.width - 600));
+    locY = 300 + (arc4random() % ((int) viewB.height - 600));
     self.pixel.position = CGPointMake(locX, locY);
     
     self.screen = [SKSpriteNode new];
@@ -91,7 +91,7 @@
 -(void)initHud {
     timeLabel = [SKLabelNode labelNodeWithFontNamed:@"Arial Bold"];
     timeLabel.name = @"timeLabel";
-    timeLabel.fontSize = 24;
+    timeLabel.fontSize = 32;
     timeLabel.fontColor = [SKColor greenColor];
     timeLabel.text = [NSString stringWithFormat:@"Time: %d", time];
     timeLabel.position = CGPointMake(20 + timeLabel.frame.size.width/2, self.size.height - (20 + timeLabel.frame.size.height/2));
@@ -99,7 +99,7 @@
     
     tapsLabel = [SKLabelNode labelNodeWithFontNamed:@"Arial Bold"];
     tapsLabel.name = @"tapsLabel";
-    tapsLabel.fontSize = 24;
+    tapsLabel.fontSize = 32;
     tapsLabel.fontColor = [SKColor redColor];
     tapsLabel.text = [NSString stringWithFormat:@"Taps: %d", taps];
     tapsLabel.position = CGPointMake(self.size.width - tapsLabel.frame.size.width/2 - 20, self.size.height - (20 + tapsLabel.frame.size.height/2));
@@ -189,6 +189,7 @@
     UITouch *touch = [touches anyObject];
     //CGPoint location = [touch locationInNode:self];
     NSArray *nodes = [self nodesAtPoint:[touch locationInNode:self]];
+    
     if (self.alive) {
         taps++;
         tapsLabel.text = [NSString stringWithFormat:@"Taps: %d", taps];
