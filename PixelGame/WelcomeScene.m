@@ -38,7 +38,7 @@
 - (SKLabelNode *)newHelloNode
 {
     SKLabelNode *helloNode = [SKLabelNode labelNodeWithFontNamed:@"Arial Bold"];
-    helloNode.text = @"Pixel Game!";
+    helloNode.text = @"Find the Pixel!";
     helloNode.fontSize = 42;
     helloNode.position = CGPointMake(CGRectGetMidX(self.frame),CGRectGetMidY(self.frame));
     helloNode.name = @"helloNode";

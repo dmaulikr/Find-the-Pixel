@@ -13,12 +13,15 @@
     BOOL countdown;
     int time;
     int taps;
+    int score;
     CGSize viewB;
     
     SKLabelNode *myLabel;
     
     SKLabelNode* timeLabel;
     SKLabelNode* tapsLabel;
+    SKLabelNode* scoreLabel;
+    SKLabelNode* levelLabel;
     int lastRecordedTime;
     
     BOOL won;
@@ -26,14 +29,36 @@
     
     float x;
     float y;
+    int level;
+    int pastScore;
     
     float locX, locY;
+    NSUserDefaults *prefs;
 }
 
 -(id)initWithSize:(CGSize)size {    
     if (self = [super initWithSize:size]) {
         /* Setup your scene here */
         viewB = size;
+        
+        prefs = [NSUserDefaults standardUserDefaults];
+        
+        //[prefs setInteger:0 forKey:@"level"];
+        //[prefs setInteger:0 forKey:@"score"];
+        
+        level = [prefs integerForKey:@"level"];
+        if (level == 0)
+            level = 1;
+        
+        pastScore = [prefs integerForKey:@"score"];
+        if (pastScore == 0) {
+            score = 100;
+            pastScore = 0;
+        } else {
+            score = pastScore;
+        }
+
+        
         [self initBackground:viewB];
         [self initHud];
         
@@ -65,9 +90,8 @@
 - (void) initBackground:(CGSize) sceneSize
 {
     NSString *backgroundStr;
-    int backC = arc4random() % 65 + 1;
+    int backC = arc4random() % 60 + 1;
     backgroundStr = [NSString stringWithFormat:@"back%d.jpg", backC];
-    NSLog(@"BACK %i", backC);
     
     self.backgroundImageNode = [SKSpriteNode spriteNodeWithImageNamed:backgroundStr];
     self.backgroundImageNode.size = sceneSize;
@@ -97,6 +121,14 @@
     timeLabel.position = CGPointMake(20 + timeLabel.frame.size.width/2, self.size.height - (20 + timeLabel.frame.size.height/2));
     [self addChild:timeLabel];
     
+    scoreLabel = [SKLabelNode labelNodeWithFontNamed:@"Arial Bold"];
+    scoreLabel.name = @"scoreLabel";
+    scoreLabel.fontSize = 32;
+    scoreLabel.fontColor = [SKColor yellowColor];
+    scoreLabel.text = [NSString stringWithFormat:@"Score: %d", score];
+    scoreLabel.position = CGPointMake(self.size.width/2, self.size.height - (20 + scoreLabel.frame.size.height/2));
+    [self addChild:scoreLabel];
+    
     tapsLabel = [SKLabelNode labelNodeWithFontNamed:@"Arial Bold"];
     tapsLabel.name = @"tapsLabel";
     tapsLabel.fontSize = 32;
@@ -104,6 +136,14 @@
     tapsLabel.text = [NSString stringWithFormat:@"Taps: %d", taps];
     tapsLabel.position = CGPointMake(self.size.width - tapsLabel.frame.size.width/2 - 20, self.size.height - (20 + tapsLabel.frame.size.height/2));
     [self addChild:tapsLabel];
+    
+    levelLabel = [SKLabelNode labelNodeWithFontNamed:@"Arial Bold"];
+    levelLabel.name = @"levelLabel";
+    levelLabel.fontSize = 32;
+    levelLabel.fontColor = [SKColor orangeColor];
+    levelLabel.text = [NSString stringWithFormat:@"Level: %d", level];
+    levelLabel.position = CGPointMake(self.size.width - levelLabel.frame.size.width/2 - 20, CGRectGetMinY(self.frame) + 20);
+    [self addChild:levelLabel];
 }
 
 - (void)didMoveToView:(SKView *)view
@@ -147,23 +187,37 @@
                     [countNode runAction:moveSequence completion:nil];
                 }
             }
+            scoreLabel.text = [NSString stringWithFormat:@"Score: %d", score];
         } else {
             if (self.alive) {
                 timeLabel.text = [NSString stringWithFormat:@"Time: %d", time];
+                score = pastScore + 100 - (time + (5*taps));
+                if (score < 1)
+                    score = 1;
+                scoreLabel.text = [NSString stringWithFormat:@"Score: %d", score];
                 lastRecordedTime = time;
                 
                 x = 2.0f * ((float)rand() / (float)RAND_MAX) - 1.0f;
                 y = 2.0f * ((float)rand() / (float)RAND_MAX) - 1.0f;
                 x *= 1.2;
                 y *= 1.2;
+                
+                if (level > 9) {
+                    float rot = ((-1)^level)*((M_PI + (float)level*.1)/32.0);
+                    SKAction *rotation = [SKAction rotateByAngle:rot duration:3];
+                    [self.backgroundImageNode runAction:rotation];
+                }
             }
             else {
                 gameOver = YES;
                 self.alive = NO;
                 timeLabel.text = [NSString stringWithFormat:@"Time: %d", lastRecordedTime];
                 if (!won) {
-                    myLabel.text = @"Oh no! Better luck next round!";
+                    myLabel.text = @"Oh no! Game Over!";
                     myLabel.hidden = NO;
+
+                    [prefs setInteger:1 forKey:@"level"];
+                    [prefs setInteger:0 forKey:@"score"];
                 }
             }
         }
@@ -206,6 +260,9 @@
         if ([node.name isEqualToString:@"screen"]) {
             if (!countdown) {
                 self.alive = NO;
+                level ++;
+                [prefs setInteger:level forKey:@"level"];
+                [prefs setInteger:score forKey:@"score"];
                 myLabel.text = @"WOO! You got it! Keep it up!";
                 myLabel.hidden = NO;
                 won = YES;
@@ -240,5 +297,4 @@
     [self updateWithTimeSinceLastUpdate:timeSinceLast];
     
 }
-
 @end
